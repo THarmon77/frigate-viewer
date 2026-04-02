@@ -1,6 +1,6 @@
 import React, {FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {Image, TouchableWithoutFeedback, View} from 'react-native';
+import {Image, ToastAndroid, TouchableWithoutFeedback, View} from 'react-native';
 import {Colors, Drawer, DrawerItemProps} from 'react-native-ui-lib';
 import crashlytics from '@react-native-firebase/crashlytics';
 import {useRest} from '../../helpers/rest';
@@ -102,9 +102,16 @@ export const CameraEvent: FC<ICameraEventProps> = props => {
       icon: require('./icons/delete.png'),
       background: Colors.red30,
       onPress: () => {
-        del(server, `events/${id}`, {json: false}).then(() => {
-          onDelete([id]);
-        });
+        del(server, `events/${id}`, {json: false})
+          .then(() => {
+            onDelete([id]);
+          })
+          .catch(() => {
+            ToastAndroid.show(
+              intl.formatMessage(messages['error.actionFailed']),
+              ToastAndroid.LONG,
+            );
+          });
       },
     }),
     [server, id, intl, onDelete],
@@ -118,9 +125,16 @@ export const CameraEvent: FC<ICameraEventProps> = props => {
             icon: require('./icons/star.png'),
             background: Colors.red40,
             onPress: () => {
-              del(server, `events/${id}/retain`, {json: false}).then(() => {
-                setRetained(false);
-              });
+              del(server, `events/${id}/retain`, {json: false})
+                .then(() => {
+                  setRetained(false);
+                })
+                .catch(() => {
+                  ToastAndroid.show(
+                    intl.formatMessage(messages['error.actionFailed']),
+                    ToastAndroid.LONG,
+                  );
+                });
             },
           }
         : {
@@ -128,9 +142,16 @@ export const CameraEvent: FC<ICameraEventProps> = props => {
             icon: require('./icons/star.png'),
             background: Colors.green30,
             onPress: () => {
-              post(server, `events/${id}/retain`, {json: false}).then(() => {
-                setRetained(true);
-              });
+              post(server, `events/${id}/retain`, {json: false})
+                .then(() => {
+                  setRetained(true);
+                })
+                .catch(() => {
+                  ToastAndroid.show(
+                    intl.formatMessage(messages['error.actionFailed']),
+                    ToastAndroid.LONG,
+                  );
+                });
             },
           },
     [server, id, intl, retained],

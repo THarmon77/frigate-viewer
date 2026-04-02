@@ -87,10 +87,13 @@ export const System: NavigationFunctionComponent = ({componentId}) => {
 
   const refresh = () => {
     setLoading(true);
-    return get<Stats>(server, `stats`).then(stats => {
-      setStats(stats);
-      setLoading(false);
-    });
+    return get<Stats>(server, `stats`)
+      .then(stats => {
+        setStats(stats);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const detectors: DetectorRow[] = useMemo(

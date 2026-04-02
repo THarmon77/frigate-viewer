@@ -84,7 +84,10 @@ export const Share: FC<ShareProps> = ({event, onDismiss}) => {
     } catch (err) {
       crashlytics().recordError(err as Error);
       setLoading(false);
-      ToastAndroid.show(JSON.stringify(err), ToastAndroid.LONG);
+      ToastAndroid.show(
+        String((err as Error)?.message ?? err),
+        ToastAndroid.LONG,
+      );
     }
   };
 
@@ -95,12 +98,19 @@ export const Share: FC<ShareProps> = ({event, onDismiss}) => {
       filename,
       `${apiUrl}/events/${event!.id}/snapshot.jpg?bbox=1`,
     );
+    if (!path) {
+      return;
+    }
     await stall(200);
     RNShare.open({
       url: `file://${path}`,
-    }).then(() => {
-      RNFetchBlob.session('share').dispose();
-    });
+    })
+      .then(() => {
+        RNFetchBlob.session('share').dispose();
+      })
+      .catch(() => {
+        RNFetchBlob.session('share').dispose();
+      });
   };
 
   const shareClip = async () => {
@@ -110,12 +120,19 @@ export const Share: FC<ShareProps> = ({event, onDismiss}) => {
       filename,
       `${apiUrl}/events/${event!.id}/clip.mp4`,
     );
+    if (!path) {
+      return;
+    }
     await stall(200);
     RNShare.open({
       url: `file://${path}`,
-    }).then(() => {
-      RNFetchBlob.session('share').dispose();
-    });
+    })
+      .then(() => {
+        RNFetchBlob.session('share').dispose();
+      })
+      .catch(() => {
+        RNFetchBlob.session('share').dispose();
+      });
   };
 
   const close = () => {

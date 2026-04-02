@@ -12,15 +12,15 @@ This directory does not contain `.patch` files — it contains the
 
 ## Patch Index
 
-| ID       | File                     | Type      | Status   | Risk   |
-|----------|--------------------------|-----------|----------|--------|
-| PATCH-01 | `store/settings.ts:107`  | Bug fix   | Planned  | Low    |
-| PATCH-02 | `store/store.ts:27-30`   | Bug fix   | Planned  | Medium |
-| PATCH-03 | `helpers/rest.ts:59,109` | Bug fix   | Planned  | Low    |
-| PATCH-04 | `views/system/System.tsx:88-94` | Bug fix | Planned | Low  |
-| PATCH-05 | `views/camera-events/CameraEvents.tsx:184,193` | Bug fix | Planned | Low |
-| PATCH-06 | `views/camera-events/CameraEvent.tsx:105,121,131` | Bug fix | Planned | Low |
-| PATCH-07 | `views/camera-events/Share.tsx:94-103` | Bug fix | Planned | Medium |
+| ID       | File                     | Type      | Status      | Risk   |
+|----------|--------------------------|-----------|-------------|--------|
+| PATCH-01 | `store/settings.ts:107`  | Bug fix   | **Applied** | Low    |
+| PATCH-02 | `store/store.ts:27-30`   | Bug fix   | **Applied** | Medium |
+| PATCH-03 | `helpers/rest.ts:59,109` + `rest.messages.ts` | Bug fix | **Applied** | Low |
+| PATCH-04 | `views/system/System.tsx:88-94` | Bug fix | **Applied** | Low  |
+| PATCH-05 | `views/camera-events/CameraEvents.tsx:184,193` + `messages.ts` | Bug fix | **Applied** | Low |
+| PATCH-06 | `views/camera-events/CameraEvent.tsx:105,121,131` + `messages.ts` | Bug fix | **Applied** | Low |
+| PATCH-07 | `views/camera-events/Share.tsx:65-119` | Bug fix | **Applied** | Medium |
 
 ---
 

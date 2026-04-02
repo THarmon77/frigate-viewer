@@ -13,4 +13,6 @@ export const messages = makeMessages('cameraEvents', {
   'share.snapshot.label': 'Snapshot',
   'share.clip.label': 'Clip',
   'toast.noClip': 'This event has no clip.',
+  'error.loadFailed': 'Failed to load events.',
+  'error.actionFailed': 'Action failed. Please try again.',
 });

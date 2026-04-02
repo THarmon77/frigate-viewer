@@ -56,6 +56,14 @@ export const useRest = () => {
           intl.formatMessage(messages['frigateAuth.wrongCredentials']),
         );
       }
+      if (!response.ok) {
+        throw new Error(
+          intl.formatMessage(messages['error.httpError'], {
+            status: response.status,
+            url,
+          }),
+        );
+      }
       return response.json();
     } catch (error) {
       crashlytics().recordError(error as Error);
@@ -98,6 +106,14 @@ export const useRest = () => {
         if (server.auth === 'frigate') {
           await login(server);
           const retriedResponse = await executeFetch();
+          if (!retriedResponse.ok) {
+            throw new Error(
+              intl.formatMessage(messages['error.httpError'], {
+                status: retriedResponse.status,
+                url,
+              }),
+            );
+          }
           return retriedResponse[json === false ? 'text' : 'json']();
         } else {
           crashlytics().log(`Unauthorized`);
@@ -105,6 +121,14 @@ export const useRest = () => {
             intl.formatMessage(messages['error.unauthorized'], {url}),
           );
         }
+      }
+      if (!response.ok) {
+        throw new Error(
+          intl.formatMessage(messages['error.httpError'], {
+            status: response.status,
+            url,
+          }),
+        );
       }
       return response[json === false ? 'text' : 'json']();
     } catch (error) {

@@ -5,6 +5,7 @@ export const messages = makeMessages('api', {
   'frigateAuth.wrongCredentials':
     'Authorization error, check your credentials.',
   'error.unauthorized': 'Wrong credentials when tried to reach {url}',
+  'error.httpError': 'Server error ({status}) at {url}',
 });
 
 export type MessageKey = typeof messages extends Record<

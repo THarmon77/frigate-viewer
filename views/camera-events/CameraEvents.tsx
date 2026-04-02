@@ -181,7 +181,12 @@ export const CameraEvents: NavigationFunctionComponent<ICameraEventsProps> = ({
               listRef.current?.scrollToIndex({index: 0});
             }
           })
-          .catch(() => {})
+          .catch(() => {
+            ToastAndroid.show(
+              intl.formatMessage(messages['error.loadFailed']),
+              ToastAndroid.LONG,
+            );
+          })
           .finally(() => {
             setRefreshing(false);
           });
@@ -194,10 +199,12 @@ export const CameraEvents: NavigationFunctionComponent<ICameraEventsProps> = ({
     if (!endReached) {
       get<ICameraEvent[]>(server, `events`, {
         queryParams: eventsQueryParams,
-      }).then(data => {
-        watchEndReached(data);
-        setEvents([...events, ...data]);
-      });
+      })
+        .then(data => {
+          watchEndReached(data);
+          setEvents([...events, ...data]);
+        })
+        .catch(() => {});
     }
   };
 

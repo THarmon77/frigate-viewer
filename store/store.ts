@@ -26,7 +26,10 @@ const settingsReducer = persistReducer<SettingsState>(
     transforms: [
       createTransform(
         state => state,
-        state => ({...state, ...settingsMigrations(state)}),
+        (state: SettingsState) => ({
+          ...state,
+          v1: settingsMigrations(state.v1),
+        }),
       ),
     ],
   },

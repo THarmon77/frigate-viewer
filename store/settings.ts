@@ -104,7 +104,7 @@ export const initialSettings: ISettings = {
     sendCrashReports: true,
   },
   locale: {
-    region: NativeModules.I18nManager.localeIdentifier,
+    region: NativeModules.I18nManager?.localeIdentifier ?? 'en_US',
     datesDisplay: 'descriptive',
   },
   cameras: {
