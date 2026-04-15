@@ -1,11 +1,23 @@
 # MODULE_MAP.md — Per-Module Documentation
 
-> Each module follows the four-field protocol:
-> **THE INTENT** / **THE GHOSTS** / **THE DETRIMENT** / **THE TRANSPORTER MAP**
+> Each module follows the **five-field Omega Protocol**:
+> **LAYER 0 (MONKEY LEVEL)** / **THE INTENT** / **THE GHOSTS** / **THE DETRIMENT** / **THE TRANSPORTER MAP**
+>
+> *Layer 0 is written so a non-programmer can understand what the module
+> does in plain language. No jargon. No acronyms. One analogy.*
 
 ---
 
 ## `store/settings.ts`
+
+### LAYER 0 — MONKEY LEVEL
+Imagine the app has a little notepad where it writes down your preferences:
+*"This person likes English, dark mode, and wants to see 2 camera columns."*
+This file is that notepad — it defines what goes on it, what the defaults
+are if the notepad is blank, and how to upgrade old notes when the app
+gets new features. The bug we fixed here was that the app tried to read
+your phone's language setting *before the phone was ready to answer*, which
+crashed the whole notepad before anything was written.
 
 ### THE INTENT
 Define the canonical shape of all user-configurable settings as a
@@ -55,6 +67,14 @@ To reconstruct this module from scratch:
 
 ## `store/store.ts`
 
+### LAYER 0 — MONKEY LEVEL
+Think of this as the app's central filing cabinet. When you close the app,
+it takes everything in the cabinet, photographs it, and saves the photo to
+your phone's disk. When you open the app again, it looks at the photo and
+restores everything exactly. The bug we fixed here was that when restoring,
+the app was looking at the *photo frame* instead of the *photo inside it*
+— so the restore logic was running on the wrong object, silently doing nothing.
+
 ### THE INTENT
 Configure the Redux store with two reducers: `settings` (persisted via
 `redux-persist` to `AsyncStorage`) and `events` (not persisted, ephemeral).
@@ -103,6 +123,15 @@ function to `persistReducer` config.
 
 ## `helpers/rest.ts`
 
+### LAYER 0 — MONKEY LEVEL
+This is the app's *postal service*. When any screen needs to ask the camera
+server a question ("show me today's events"), it hands a letter to this
+module, which addresses it, stamps it, and sends it. When the reply comes
+back, this module opens the envelope. The bug we fixed was that the postal
+service was trying to read the letter even when the reply was a rejection
+slip written in a completely different language — causing a garbled-reading
+error that users saw as a mysterious "JSON error".
+
 ### THE INTENT
 Provide a React hook (`useRest`) that exposes three functions — `get`,
 `post`, `del` — for making authenticated HTTP requests to the Frigate
@@ -150,6 +179,14 @@ Auth strategies:
 
 ## `helpers/redux.tsx`
 
+### LAYER 0 — MONKEY LEVEL
+Every room in the app needs access to the filing cabinet (`store/store.ts`).
+This module is the *master key* — a small wrapper you clip onto any screen
+so it automatically gets filing-cabinet access when it opens. It also makes
+the screen *wait in the hallway* until the filing cabinet has been fully
+restored from disk before letting anyone in. Without this key, every screen
+would be a stranger who can't remember anything about you.
+
 ### THE INTENT
 Provide a Higher-Order Component `withRedux` that wraps any
 `react-native-navigation` screen component with the Redux `Provider`
@@ -185,6 +222,15 @@ Add an `ErrorBoundary` wrapper outside `Provider` for full resilience.
 ---
 
 ## `views/camera-events/CameraEvents.tsx`
+
+### LAYER 0 — MONKEY LEVEL
+This is the *photo album* screen. It shows you a scrollable list of things
+your cameras detected — a person at the door, a car in the driveway. You
+can pull down to refresh the album, scroll to the bottom to load older
+photos, and filter by camera or type of detection. The bugs we fixed here
+were: (1) if the album failed to load, the app showed a blank page with no
+explanation, and (2) if loading more old photos failed mid-scroll, the app
+silently stopped without telling you.
 
 ### THE INTENT
 Display a paginated, filterable list of camera events from the Frigate
@@ -229,6 +275,15 @@ Data flow:
 
 ## `views/system/System.tsx`
 
+### LAYER 0 — MONKEY LEVEL
+This is the *engine room dashboard* — a screen showing how hard your camera
+server's computer is working: CPU usage, GPU load, how many frames per
+second each camera is processing. It refreshes automatically every 30
+seconds like a live speedometer. The bug we fixed was that if the server
+went offline mid-refresh, the spinning loading wheel would stay on screen
+*forever* because the code that stops the spinner only ran on success, not
+on failure.
+
 ### THE INTENT
 Display a live system statistics dashboard for the Frigate server:
 detector performance, GPU utilization, per-camera CPU/FPS metrics.
@@ -259,6 +314,16 @@ CPU data is available, tables otherwise.
 
 ## `views/camera-events/Share.tsx`
 
+### LAYER 0 — MONKEY LEVEL
+When you want to send a camera snapshot or video clip to a friend, this
+module does the work: it downloads the file to your phone's temporary
+storage, then hands it to your phone's standard share menu (the one that
+lets you pick WhatsApp, email, etc.). The bugs we fixed were: (1) if the
+download failed, the app would try to share a file that didn't exist,
+causing a silent crash, and (2) downloaded files were only cleaned up on
+*successful* sharing — if you cancelled, the files piled up invisibly on
+your phone forever.
+
 ### THE INTENT
 Provide an `ActionSheet` allowing users to share a camera event's
 snapshot or clip to other apps via the native share sheet. Downloads
@@ -286,6 +351,13 @@ indicator, then invokes `react-native-share`.
 
 ## `views/camera-event-clip/CameraEventClip.tsx`
 
+### LAYER 0 — MONKEY LEVEL
+This is the *video player* screen. When you tap on a detected event and it
+has a video clip, this screen pops up fullscreen and plays it using a VLC
+video engine built into the app. Think of it as a mini YouTube player, but
+for your private security footage. It only works on Android — on iPhone the
+video engine is unavailable, so this screen would crash on launch there.
+
 ### THE INTENT
 Display a full-screen video player for a Frigate event clip using the
 `@lunarr/vlc-player` package. Supports both HTTP stream URLs and local
@@ -306,6 +378,15 @@ file playback. Handles landscape orientation locking.
 ---
 
 ## `store/events.ts`
+
+### LAYER 0 — MONKEY LEVEL
+This is a *temporary sticky note* the app uses while you're browsing events.
+It remembers things like "the user is currently filtering by the front-door
+camera and only wants to see cars." Unlike the main settings notepad
+(`store/settings.ts`), this sticky note is thrown away every time you close
+the app — your filters reset to nothing on the next launch. This may be
+intentional (filters are session-level choices) or an oversight — it is
+documented as a known carried-forward risk.
 
 ### THE INTENT
 Store ephemeral UI state for event filters: which cameras, labels,
